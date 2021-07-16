@@ -53,4 +53,5 @@ class Popuper {
     }
   }
   
-  export default Popuper
+window.Popuper = Popuper
+exports = {Popuper}
