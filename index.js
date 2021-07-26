@@ -1,25 +1,25 @@
 class Popuper {
     constructor() {
-      this._popups = Array.from(document.querySelectorAll('.popuper'))
-      this.hideAll()
-      this.setListeners()
+      this._popups = Array.from(document.querySelectorAll('.popuper'));
+      this.hideAll();
+      this.setListeners();
     }
     
     hideAll() {
-      this._popups.forEach((it) => this.hideElement(it))
+      this._popups.forEach((it) => this.hideElement(it));
     }
     
     hideElement(element) {
-      return element.style = 'display:none;'
+      return element.style = 'display:none;';
     }
     
     showElement(element) {
-      return element.style = ''
+      return element.style = '';
     }
     
     setListeners() {
-      const elements = Array.from(document.querySelectorAll('[class^=pp]'))
-      elements.forEach((it) => this.defineListener(it))
+      const elements = Array.from(document.querySelectorAll('[class^=pp]'));
+      elements.forEach((it) => this.defineListener(it));
     }
     
     defineListener(element) {
@@ -34,24 +34,29 @@ class Popuper {
     
     setListener(pp, element) {
       const [action, targetClass] = pp.split('>');
-      let listener = null
-      
+      let listener = null;
+
       switch (true) {
+        case action === 'pp-close':
+          listener = (e) => {
+            this.hideElement(e.target.closest('.popuper'));
+          };
+          break;
         default:
           listener = (e) => {
-            this.hideAll()
-            this.showElement(targetClass)
-          }
+            this.hideAll();
+            this.showElement(targetClass);
+          };
       }
      
-      element.addEventListener('click', listener)
+      element.addEventListener('click', listener);
     }
     
     showElement(targetClass) {
-      const element = this._popups.find((it) => it.classList.contains(targetClass))
-      return element.style = ''
+      const element = this._popups.find((it) => it.classList.contains(targetClass));
+      return element.style = '';
     }
   }
   
-window.Popuper = Popuper
-exports = {Popuper}
+window.Popuper = Popuper;
+exports = {Popuper};
