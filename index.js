@@ -1,8 +1,37 @@
 class Popuper {
-    constructor() {
+    constructor(config) {
+      if (!config) {
+        this._getPopupsByDefault();
+        this.hideAll();
+        this.setListeners();
+        console.log('Inited without config');
+      } else {
+        this.config = this._getConfigBtType(config);
+        console.log('Inited by config', this.config);
+      }
+      
+    }
+
+    _getPopupsByDefault() {
       this._popups = Array.from(document.querySelectorAll('.popuper'));
-      this.hideAll();
-      this.setListeners();
+
+      if (this._popups.length === 0) {
+        console.warn('Popuper: No popups found');
+      }
+    }
+
+    _getConfigBtType(arg) {
+      switch (true) {
+        case Array.isArray(arg) && arg.every((it) => it instanceof Object && !(it instanceof Function)):
+          console.log('Array of objects');
+          return arg;
+          case arg instanceof Object && !Array.isArray(arg) && !(arg instanceof Function):
+          console.log('Object');
+          return [arg];
+          default:
+          console.log('Error');
+          throw new Error('Popuper config should be an object or an array of objects.');
+      }
     }
     
     hideAll() {
@@ -33,20 +62,26 @@ class Popuper {
     }
     
     setListener(pp, element) {
-      const [action, targetClass] = pp.split('>');
+      let [action, targetClass] = pp.split('>');
+      action = action.startsWith('pp-') ? action.slice(3) : action;
       let listener = null;
 
       switch (true) {
-        case action === 'pp-close':
+        case action === 'close':
           listener = (e) => {
             this.hideElement(e.target.closest('.popuper'));
           };
           break;
+        case action === 'toggle':
+            listener = (e) => {
+              this.hideAll();
+              this.showElement(targetClass);
+            };
+          break;
         default:
-          listener = (e) => {
-            this.hideAll();
-            this.showElement(targetClass);
-          };
+          listener = () => {
+            console.warn('Popuper: wrong action type')
+          }
       }
      
       element.addEventListener('click', listener);
