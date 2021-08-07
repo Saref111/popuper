@@ -41,7 +41,6 @@ class Popuper {
     hideElement(element) {
       return element.style = 'display:none;';
     }
-    
     showElement(element) {
       return element.style = '';
     }
@@ -75,7 +74,7 @@ class Popuper {
         case action === 'toggle':
             listener = (e) => {
               this.hideAll();
-              this.showElement(targetClass);
+              this.showPopupByClass(targetClass);
             };
           break;
         default:
@@ -87,7 +86,7 @@ class Popuper {
       element.addEventListener('click', listener);
     }
     
-    showElement(targetClass) {
+    showPopupByClass(targetClass) {
       const element = this._popups.find((it) => it.classList.contains(targetClass));
       return element.style = '';
     }
