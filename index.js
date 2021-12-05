@@ -1,62 +1,30 @@
-class Popuper {
-    constructor() {
-      this._popups = Array.from(document.querySelectorAll('.popuper'));
-      this.hideAll();
-      this.setListeners();
-    }
-    
-    hideAll() {
-      this._popups.forEach((it) => this.hideElement(it));
-    }
-    
-    hideElement(element) {
-      return element.style = 'display:none;';
-    }
-    
-    showElement(element) {
-      return element.style = '';
-    }
-    
-    setListeners() {
-      const elements = Array.from(document.querySelectorAll('[class^=pp]'));
-      elements.forEach((it) => this.defineListener(it));
-    }
-    
-    defineListener(element) {
-      const classList = element.classList
-      let ppClass = ''
-      classList.forEach(it => it.startsWith('pp-') ? ppClass = it : it)
-      
-      if (ppClass) {
-        this.setListener(ppClass, element)
-      }
-    }
-    
-    setListener(pp, element) {
-      const [action, targetClass] = pp.split('>');
-      let listener = null;
-
-      switch (true) {
-        case action === 'pp-close':
-          listener = (e) => {
-            this.hideElement(e.target.closest('.popuper'));
-          };
-          break;
-        default:
-          listener = (e) => {
-            this.hideAll();
-            this.showElement(targetClass);
-          };
-      }
-     
-      element.addEventListener('click', listener);
-    }
-    
-    showElement(targetClass) {
-      const element = this._popups.find((it) => it.classList.contains(targetClass));
-      return element.style = '';
-    }
+class Popup {
+  constructor(config) {
+    this.elem = config.element 
+    this.handlers = config.handlers
   }
   
-window.Popuper = Popuper;
-exports = {Popuper};
+  setHandlers() {
+    this.handlers.forEach((it) => {
+      const ui = this.elem.querySelector(it.selector)
+      
+      if (ui) {
+        for (let key in it) {
+          if (key.endsWith('-cb')) { // no -cb
+            ui.addEventListener(key.slice(0, key.length - 3), it[key])
+          }     
+        }
+      }
+    })  
+  }
+}
+
+const p = new Popup({
+  element: document.querySelector('.qqq'),
+  handlers: [{'click-cb': () => console.log(121212),
+              'contextmenu-cb': (e) => e.preventDefault(),
+               selector: 'button'
+             }]
+})
+
+p.setHandlers()
