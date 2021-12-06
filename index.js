@@ -1,3 +1,11 @@
+class PopupController {
+  constructor() {
+    this.popups = []
+  }
+  
+  
+}
+
 class Popup {
   constructor(config) {
     this.elem = config.element 
@@ -17,6 +25,8 @@ class Popup {
       }
     })  
   }
+  
+  
 }
 
 const p = new Popup({
